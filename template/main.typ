@@ -7,67 +7,127 @@
 // Copyright: (c) 2025 Noé Henchoz
 // -------------------------------------------------------------------------
 
-// --- Constants ---
+// --- Configuration Constants ---
+// Colors
+#let COLOR_PRIMARY = rgb("#005eb8")
+#let COLOR_LINK = rgb("#005eb8")
+
+// Fonts
 #let FONT_MAIN = "Aptos"
 #let FONT_CODE = "JetBrains Mono"
-#let PAGE_MARGIN = 2.5cm
-#let TITLE_SIZE = 24pt
-#let AUTHOR_SIZE = 12pt
 
-// --- Main Template Function ---
-// This function applies the layout settings to the document.
-// It acts as a wrapper around the entire content.
+// Layout
+#let PAGE_FORMAT = "a4"
+#let PAGE_MARGIN = 2.54cm
+
+// Typography
+#let TEXT_LANG = "en"
+#let TEXT_SIZE = 11pt
+
+// Defaults
+#let DEFAULT_TITLE = "TyDoc Document"
+#let DEFAULT_DATE = datetime.today()
+#let DEFAULT_DATE_FORMAT = "[day].[month].[year]"
+
+// --- Helper Functions ---
+
+// Header content
+#let header-content(title, formatted-date) = {
+  align(center)[
+    #v(5pt)
+    #text(size: 8pt, fill: gray)[
+      #title
+      #h(1fr)
+      #formatted-date
+    ]
+    #line(length: 100%, stroke: 0.5pt + gray)
+  ]
+}
+
+// Footer content
+#let footer-content(authors) = {
+  align(center)[
+    #line(length: 100%, stroke: 0.5pt + gray)
+    #v(5pt)
+    #text(size: 8pt, fill: gray)[
+      #if authors.len() > 0 { authors.join(", ") }
+      #h(1fr)
+      #context {
+        let current = counter(page).display("1")
+        let total = counter(page).final().first()
+        [#current / #total]
+      }
+    ]
+  ]
+}
+
+// --- Main Project Function ---
 #let project(
-  title: "",
-  authors: (),
-  date: none,
+  title: DEFAULT_TITLE,
+  authors: "",
+  date: DEFAULT_DATE,
+  date-format: DEFAULT_DATE_FORMAT,
+  header: false,
+  toc: false,
   body,
+  footer: true,
 ) = {
-  // 1. Metadata Configuration
+  // Data Processing
+  let formatted-date = if type(date) == datetime {
+    date.display(date-format)
+  } else {
+    date
+  }
+  // Metadata Configuration
   set document(author: authors, title: title)
 
-  // 2. Page Configuration
+  // Page Setup
   set page(
-    paper: "a4",
+    paper: PAGE_FORMAT,
     margin: PAGE_MARGIN,
-    numbering: "1/1", // Page x of y
-    header: align(right)[
-      #text(size: 8pt, style: "italic")[#title]
-    ],
+    header: context {
+      if counter(page).get().first() > 1 {
+        header-content(title, formatted-date)
+      }
+    },
+    footer: context {
+      if counter(page).get().first() > 1 {
+        footer-content(authors)
+      }
+    },
   )
 
-  // 3. Text & Font Configuration
-  set text(font: FONT_MAIN, lang: "fr")
-  show raw: set text(font: FONT_CODE)
+  // Text & Typography
+  set text(font: FONT_MAIN, lang: TEXT_LANG, size: TEXT_SIZE)
 
-  // 4. Heading Styling
-  // Add a bit of space above headings and number them
+  // Link styling
+  show link: set text(fill: COLOR_LINK)
+  show link: underline
+
+  // Code Block Styling
+  show raw: set text(font: FONT_CODE)
+  show raw.where(block: true): block.with(
+    fill: luma(245),
+    inset: 10pt,
+    radius: 4pt,
+    width: 100%,
+  )
+
+  // Heading Styling
   set heading(numbering: "1.1.")
   show heading: it => {
+    set text(fill: COLOR_PRIMARY)
     block(above: 1.5em, below: 1em, it)
   }
 
-  // 5. Title Page / Header Layout
-  align(center)[
-    #block(text(weight: 700, size: TITLE_SIZE, title))
-    #v(1em, weak: true)
-    #if date != none {
-      text(date)
-      v(0.5em)
-    }
-    #if authors.len() > 0 {
-      text(size: AUTHOR_SIZE, weight: "bold")[
-        #authors.join(", ")
-      ]
-    }
-  ]
+  // Table of Contents
+  if toc {
+    pagebreak()
+    outline(indent: auto, depth: 3)
+    pagebreak()
+  }
 
-  // 6. Main Content Divider
-  line(length: 100%, stroke: 1pt + gray)
-  v(2em)
-
-  // 7. Render the Document Body
-  // Justify the text for a professional look
-  set par(justify: true)
+  // Body Content
+  set par(justify: true, leading: 0.65em)
   body
 }

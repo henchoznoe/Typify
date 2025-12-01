@@ -12,11 +12,16 @@
 // Apply the template to this document
 #show: project.with(
   title: "My First TyDoc Document",
-  authors: ("Noé Henchoz",),
-  date: "December 1, 2025",
+  authors: ("Author 1", "Author 2"),
+  date: datetime.today(),
+  toc: false,
 )
 
 // --- Content starts here ---
+
+First page here
+
+#pagebreak()
 
 = Introduction
 This is the first section of the document. The template automatically handles the font, margins, and the title block above.
@@ -26,3 +31,8 @@ Typst makes it easy to write content. As requested, we avoid global variables an
 
 = Conclusion
 The structure is now ready. Next steps will involve adding components like custom alert boxes or code blocks in the `lib/` folder.
+
+#pagebreak()
+
+= Appendix
+This is the appendix section.
