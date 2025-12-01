@@ -9,7 +9,6 @@
 
 #import "template/main.typ": project
 
-// Apply the template
 #show: project.with(
   title: "My New Document",
   authors: ("Noé Henchoz",),

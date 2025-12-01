@@ -15,6 +15,7 @@
 #let CORNER_RADIUS = 4pt
 
 // --- Code Frame Function ---
+
 #let code-frame(
   code,
   title: none,
