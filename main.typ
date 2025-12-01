@@ -8,31 +8,32 @@
 // -------------------------------------------------------------------------
 
 #import "template/main.typ": project
+#import "lib/alerts.typ": error, info, success, warning
 
 // Apply the template to this document
 #show: project.with(
   title: "My First TyDoc Document",
   authors: ("Author 1", "Author 2"),
   date: datetime.today(),
-  toc: false,
+  toc: true,
 )
 
 // --- Content starts here ---
 
-First page here
+= Alerts
 
-#pagebreak()
+#info[
+  This is an info alert.
+]
 
-= Introduction
-This is the first section of the document. The template automatically handles the font, margins, and the title block above.
+#warning(title: "Warning")[
+  This is a warning alert.
+]
 
-== Subsection Example
-Typst makes it easy to write content. As requested, we avoid global variables and keep things clean.
+#error(title: "Custom error")[
+  This is an error alert.
+]
 
-= Conclusion
-The structure is now ready. Next steps will involve adding components like custom alert boxes or code blocks in the `lib/` folder.
-
-#pagebreak()
-
-= Appendix
-This is the appendix section.
+#success[
+  This is a success alert.
+]
