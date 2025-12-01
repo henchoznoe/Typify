@@ -9,6 +9,7 @@
 
 #import "template/main.typ": project
 #import "lib/alerts.typ": error, info, success, warning
+#import "lib/code.typ": code-frame
 
 // Apply the template to this document
 #show: project.with(
@@ -36,4 +37,23 @@
 
 #success[
   This is a success alert.
+]
+
+= Code
+
+#code-frame(title: "src/main.rs")[
+  ```rust
+  fn main() {
+      println!("Hello, TyDoc!");
+  }
+  ```
+]
+
+#let my-script = "print('Dynamic Code')"
+#code-frame(my-script, title: "script.py", lang: "python")
+
+#code-frame()[
+  ```js
+  console.log("Hello, TyDoc!");
+  ```
 ]

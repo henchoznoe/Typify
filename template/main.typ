@@ -106,12 +106,6 @@
 
   // Code Block Styling
   show raw: set text(font: FONT_CODE)
-  show raw.where(block: true): block.with(
-    fill: luma(245),
-    inset: 10pt,
-    radius: 4pt,
-    width: 100%,
-  )
 
   // Heading Styling
   set heading(numbering: "1.1.")
