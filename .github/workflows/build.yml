@@ -1,49 +1,43 @@
-# -------------------------------------------------------------------------
-# File: .github/workflows/build.yml
-# Authors : Noé Henchoz & Yoan Gilliand
-# Description: GitHub Actions workflow to compile the Typst demo document.
-# License: MIT
-# Copyright: (c) 2025 Noé Henchoz & Yoan Gilliand
-# -------------------------------------------------------------------------
-
-name: Build Typify Demo
+name: Build Typify Documentation
 
 on:
   push:
-    branches:
-      - main
-    tags:
-      - "v*"
-  workflow_dispatch:
-
-permissions:
-  contents: write
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
 
 jobs:
-  build-pdf:
-    name: Compile & Release
+  build:
     runs-on: ubuntu-latest
-
+    
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-
+      
       - name: Setup Typst
         uses: typst-community/setup-typst@v3
-
-      - name: Compile demo.typ
-        run: typst compile demo.typ
-
-      - name: Upload PDF artifact (Temporary)
-        if: "!startsWith(github.ref, 'refs/tags/')"
+        with:
+          typst-version: 'latest'
+      
+      - name: Create output directory
+        run: mkdir -p output
+      
+      - name: Build all demo files
+        run: |
+          # Find all .typ files in app/ directory (excluding template/)
+          for file in app/*.typ; do
+            if [ -f "$file" ]; then
+              filename=$(basename "$file" .typ)
+              echo "Building $filename..."
+              typst compile "$file" "output/${filename}.pdf"
+            fi
+          done
+      
+      - name: List generated PDFs
+        run: ls -lh output/
+      
+      - name: Upload PDFs as artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: demo-pdf
-          path: demo.pdf
-          retention-days: 5
-
-      - name: Upload to Release
-        if: startsWith(github.ref, 'refs/tags/')
-        uses: softprops/action-gh-release@v2
-        with:
-          files: demo.pdf
+          name: typify-demos
+          path: output/*.pdf

@@ -1,7 +1,8 @@
 [package]
 name = "Typify"
-version = "0.1.0"
-entrypoint = "template/main.typ"
-authors = ["Noé Henchoz"]
+version = "1.0.0"
+entrypoint = "app/template/main.typ"
+authors = ["Noé Henchoz", "Yoan Gilliand"]
 license = "MIT"
 description = "A modular, ready-to-use template for modern Typst documents"
+repository = "https://github.com/henchoznoe/Typify"

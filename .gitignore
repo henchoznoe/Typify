@@ -1,10 +1,30 @@
-# Generated files
-*.pdf
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
 
-# System files
+# OS
 .DS_Store
 Thumbs.db
 
-# IDE files
-.idea
-.vscode
+# Typst Build Outputs
+*.pdf
+!app/assets/*.pdf  # Garder les assets PDF s'il y en a
+
+# Build Directories
+output/
+build/
+dist/
+
+# Temporary Files
+*.tmp
+*.temp
+.typst-cache/
+
+# JetBrains
+.fleet/
+
+# Logs
+*.log
