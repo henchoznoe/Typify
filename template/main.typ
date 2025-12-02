@@ -1,65 +1,17 @@
 // -------------------------------------------------------------------------
 // File: template/main.typ
 // Author: Noé Henchoz
-// Date: 2025-12-01
+// Date: 2025-12-02
 // Description: Core layout definition for the TyDoc template.
 // License: MIT
 // Copyright: (c) 2025 Noé Henchoz
 // -------------------------------------------------------------------------
 
-// --- Configuration Constants ---
-// Colors
-#let COLOR_PRIMARY = rgb("#005eb8")
-#let COLOR_LINK = rgb("#005eb8")
-
-// Fonts
-#let FONT_MAIN = "Aptos"
-#let FONT_CODE = "JetBrains Mono"
-
-// Layout
-#let PAGE_FORMAT = "a4"
-#let PAGE_MARGIN = 2.54cm
-
-// Typography
-#let TEXT_LANG = "en"
-#let TEXT_SIZE = 11pt
-
-// Defaults
-#let DEFAULT_TITLE = "TyDoc Document"
-#let DEFAULT_DATE = datetime.today()
-#let DEFAULT_DATE_FORMAT = "[day].[month].[year]"
-
-// --- Helper Functions ---
-
-// Header content
-#let header-content(title, formatted-date) = {
-  align(center)[
-    #v(5pt)
-    #text(size: 8pt, fill: gray)[
-      #title
-      #h(1fr)
-      #formatted-date
-    ]
-    #line(length: 100%, stroke: 0.5pt + gray)
-  ]
-}
-
-// Footer content
-#let footer-content(authors) = {
-  align(center)[
-    #line(length: 100%, stroke: 0.5pt + gray)
-    #v(5pt)
-    #text(size: 8pt, fill: gray)[
-      #if authors.len() > 0 { authors.join(", ") }
-      #h(1fr)
-      #context {
-        let current = counter(page).display("1")
-        let total = counter(page).final().first()
-        [#current / #total]
-      }
-    ]
-  ]
-}
+#import "config.typ": *
+#import "components/header.typ": header-content
+#import "components/footer.typ": footer-content
+#import "components/cover.typ": cover-page
+#import "components/outlines.typ": table-of-contents, table-of-figures
 
 // --- Main Project Function ---
 #let project(
@@ -69,6 +21,10 @@
   date-format: DEFAULT_DATE_FORMAT,
   header: false,
   toc: false,
+  tof: false,
+  cover: false,
+  subtitle: none,
+  classe: none,
   body,
   footer: true,
 ) = {
@@ -78,21 +34,27 @@
   } else {
     date
   }
+
   // Metadata Configuration
   set document(author: authors, title: title)
 
   // Page Setup
   set page(
     paper: PAGE_FORMAT,
-    margin: PAGE_MARGIN,
+    margin: (
+      top: PAGE_MARGIN_TOP,
+      bottom: PAGE_MARGIN_BOTTOM,
+      left: PAGE_MARGIN_LEFT,
+      right: PAGE_MARGIN_RIGHT,
+    ),
     header: context {
       if counter(page).get().first() > 1 {
-        header-content(title, formatted-date)
+        header-content(title, subtitle, formatted-date)
       }
     },
     footer: context {
       if counter(page).get().first() > 1 {
-        footer-content(authors)
+        footer-content(authors, formatted-date)
       }
     },
   )
@@ -109,19 +71,55 @@
 
   // Heading Styling
   set heading(numbering: "1.1.")
-  show heading: it => {
-    set text(fill: COLOR_PRIMARY)
+  show heading.where(level: 1): it => {
+    set text(size: 18pt, weight: "bold", fill: COLOR_PRIMARY, font: FONT_MAIN)
     block(above: 1.5em, below: 1em, it)
+  }
+  show heading.where(level: 2): it => {
+    set text(size: 16pt, weight: "bold", fill: COLOR_PRIMARY, font: FONT_MAIN)
+    block(above: 1.5em, below: 1em, it)
+  }
+  show heading.where(level: 3): it => {
+    set text(size: 14pt, weight: "bold", fill: COLOR_PRIMARY, font: FONT_MAIN)
+    block(above: 1.5em, below: 1em, it)
+  }
+
+  // Table Styling
+  set table(
+    stroke: 1pt + rgb("c9c9c9"),
+    inset: 0.8em,
+    fill: (x, y) => if y == 0 { rgb("007cb7") } else { none },
+  )
+  set table.cell(breakable: false)
+  show table.cell: it => {
+    if it.y == 0 {
+      set text(white, weight: "bold")
+      strong(it)
+    } else {
+      set text(black)
+      it
+    }
+  }
+
+  // Figure Styling
+  show figure: set figure(supplement: [Figure])
+
+  // Cover page
+  if cover {
+    cover-page(title, authors, formatted-date, subtitle: subtitle, classe: classe)
   }
 
   // Table of Contents
   if toc {
-    pagebreak()
-    outline(indent: auto, depth: 3)
-    pagebreak()
+    table-of-contents()
   }
 
   // Body Content
-  set par(justify: true, leading: 0.65em)
+  set par(justify: true, leading: TEXT_LEADING, spacing: PAR_SPACING)
   body
+
+  // Table of Figures (at the end)
+  if tof {
+    table-of-figures()
+  }
 }
