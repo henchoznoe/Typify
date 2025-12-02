@@ -32,7 +32,9 @@ cd Typify
 ```bash
 # Depuis la racine du projet
 typst compile app/demo-heia.typ
-typst compile app/demo-default.typ
+
+# Avec fonts personnalisées
+typst compile --font-path app/fonts app/demo-heia.typ
 
 # Ou depuis le dossier app/
 cd app
@@ -42,15 +44,30 @@ typst compile demo-heia.typ
 ### Compiler avec watch (recompilation automatique)
 
 ```bash
-typst watch app/demo-heia.typ
+typst watch --font-path app/fonts app/demo-heia.typ
 ```
 
 ### Générer dans un dossier spécifique
 
 ```bash
 mkdir -p output
-typst compile app/demo-heia.typ output/demo-heia.pdf
+typst compile --font-path app/fonts app/demo-heia.typ output/demo-heia.pdf
 ```
+
+## 🔤 Fonts (Polices)
+
+Le template utilise :
+- **Aptos** (ou Calibri) - Texte principal
+- **JetBrains Mono** - Code
+
+### Utiliser des fonts personnalisées
+
+1. Placez vos fonts dans `app/fonts/`
+2. Compilez avec `--font-path app/fonts`
+
+Si les fonts ne sont pas disponibles, Typst utilisera les fonts système par défaut.
+
+Voir [`app/fonts/README.md`](app/fonts/README.md) pour plus de détails.
 
 ## 📝 Utilisation
 
@@ -147,9 +164,29 @@ Typify/
 ## 🔧 CI/CD
 
 Le projet inclut un workflow GitHub Actions (`.github/workflows/build.yml`) qui :
-- Compile automatiquement tous les fichiers `.typ` dans `app/` à chaque push
-- Génère les PDFs et les upload en tant qu'artifacts
-- Les PDFs sont disponibles dans l'onglet "Actions" de GitHub
+- **Compile automatiquement** tous les fichiers `.typ` dans `app/` à chaque push
+- **Upload les PDFs** comme artifacts (disponibles 30 jours)
+- **Publie les PDFs** dans les GitHub Releases pour les tags (versions)
+
+### Télécharger les PDFs
+
+**Pour les versions taggées** (recommandé) :
+- Aller dans [Releases](https://github.com/henchoznoe/Typify/releases)
+- Télécharger les PDFs depuis la dernière release
+
+**Pour les builds de développement** :
+- Aller dans l'onglet [Actions](https://github.com/henchoznoe/Typify/actions)
+- Cliquer sur un workflow réussi
+- Télécharger l'artifact `typify-demos-*`
+
+### Créer une nouvelle release
+
+```bash
+git tag v1.0.0
+git push origin v1.0.0
+```
+
+Le workflow publiera automatiquement les PDFs dans la release.
 
 ## 📄 Licence
 
