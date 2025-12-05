@@ -113,6 +113,12 @@
     set text(size: 14pt, weight: "bold", fill: theme.primary, font: FONT_MAIN)
     block(above: 1.5em, below: 1em, it)
   }
+  show heading.where(level: 4): it => {
+    set text(size: 14pt, weight: "bold", fill: theme.primary, font: FONT_MAIN)
+    block(above: 1.5em, below: 1em)[
+      #it.body
+    ]
+  }
 
   // Table Styling
   set table(
