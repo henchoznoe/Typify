@@ -41,7 +41,7 @@
           width: 100%,
           inset: (x: 10pt, y: 6pt),
           below: 0pt,
-          text(size: 9pt, weight: "bold", fill: TEXT_COLOR)[#title],
+          text(size: 8pt, weight: "bold", fill: TEXT_COLOR)[#title],
         )
         line(length: 100%, stroke: 0.5pt + BORDER_COLOR)
       }
@@ -64,6 +64,7 @@
         bottom: 10pt,
         top: if title != none { 0pt } else { 10pt },
         {
+          show raw: set text(size: 7.5pt)
           show raw: set block(fill: none, stroke: none, inset: 0pt, radius: 0pt)
           code-styled
         },
