@@ -1,0 +1,59 @@
+stages:
+  - build
+  - release
+
+# Configuration par défaut pour tous les jobs
+default:
+  image: alpine:latest
+  before_script:
+    # Installation des dépendances (curl pour télécharger, tar pour extraire)
+    - apk add --no-cache curl tar xz
+    # Installation manuelle de Typst (équivalent de setup-typst)
+    - curl -L -o typst.tar.xz https://github.com/typst/typst/releases/latest/download/typst-x86_64-unknown-linux-musl.tar.xz
+    - tar -xf typst.tar.xz
+    - mv typst-x86_64-unknown-linux-musl/typst /usr/bin/typst
+    - chmod +x /usr/bin/typst
+
+# Job de compilation
+build-docs:
+  stage: build
+  script:
+    - mkdir -p output
+    - |
+      # Boucle sur les fichiers .typ dans app/
+      for file in app/*.typ; do
+        if [ -f "$file" ]; then
+          filename=$(basename "$file" .typ)
+          echo "Building $filename..."
+          # Compilation avec le chemin des polices
+          typst compile --font-path app/fonts "$file" "output/${filename}.pdf"
+        fi
+      done
+    - ls -lh output/
+  
+  # Définition des règles (quand lancer ce job)
+  rules:
+    - if: $CI_COMMIT_BRANCH == "main"
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+    - if: $CI_COMMIT_TAG =~ /^v.*/
+  
+  # Gestion des artefacts (les PDFs générés)
+  artifacts:
+    name: "typify-docs-$CI_COMMIT_SHA"
+    paths:
+      - output/*.pdf
+    expire_in: 30 days
+
+# Job de Release (uniquement pour les tags)
+create-release:
+  stage: release
+  image: registry.gitlab.com/gitlab-org/release-cli:latest
+  # On écrase le before_script par défaut car cette image n'a pas besoin de Typst
+  before_script: [] 
+  rules:
+    - if: $CI_COMMIT_TAG =~ /^v.*/
+  script:
+    - echo "Création de la release pour le tag $CI_COMMIT_TAG"
+  release:
+    tag_name: '$CI_COMMIT_TAG'
+    description: 'Release créée automatiquement via GitLab CI'
