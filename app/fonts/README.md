@@ -1,36 +1,36 @@
-# 🔤 Fonts
+# 🔤 Polices (Fonts)
 
-This directory contains the specific fonts used by the Typify template.
+Ce dossier contient les polices spécifiques utilisées par le template Typify.
 
-- **Aptos**: Main text font (Heading and body).
-- **JetBrains Mono**: Monospace font for code blocks.
+- **Aptos** : Police principale (Titres et corps de texte).
+- **JetBrains Mono** : Police à chasse fixe pour les blocs de code.
 
 ## 📦 Installation
 
-To ensure the template renders correctly on your system without needing to specify the font path every time, you can install these fonts globally.
+Pour garantir que le template s'affiche correctement sur votre système sans avoir à spécifier le chemin des polices à chaque fois, vous pouvez installer ces polices globalement.
 
 ### 🪟 Windows
 
-1.  Open the `Aptos` folder.
-2.  Select all font files (`.ttf`).
-3.  Right-click and select **"Install"** or **"Install for all users"**.
-4.  Repeat for the `JetBrainsMono` folder.
+1.  Ouvrez le dossier `Aptos`.
+2.  Sélectionnez tous les fichiers de police (`.ttf`).
+3.  Faites un clic droit et sélectionnez **"Installer"** ou **"Installer pour tous les utilisateurs"**.
+4.  Répétez l'opération pour le dossier `JetBrainsMono`.
 
 ### 🍎 MacOS
 
-1.  Open the `Aptos` folder.
-2.  Select all font files (`.ttf`).
-3.  Double-click on the selection.
-4.  In the Font Book window that appears, click **"Install Font"**.
-5.  Repeat for the `JetBrainsMono` folder.
+1.  Ouvrez le dossier `Aptos`.
+2.  Sélectionnez tous les fichiers de police (`.ttf`).
+3.  Double-cliquez sur la sélection.
+4.  Dans la fenêtre du Livre des polices qui s'affiche, cliquez sur **"Installer la police"**.
+5.  Répétez l'opération pour le dossier `JetBrainsMono`.
 
-## 🔨 Usage with Typst
+## 🔨 Utilisation avec Typst
 
-If you don't want to install the fonts globally, you can simply tell Typst where to look for them during compilation:
+Si vous ne souhaitez pas installer les polices globalement, vous pouvez simplement indiquer à Typst où les trouver lors de la compilation :
 
 ```bash
-# Point to this folder when compiling
+# Pointer vers ce dossier lors de la compilation
 typst compile --font-path app/fonts app/demo-heia.typ
 ```
 
-Using the `--font-path` argument ensures that Typst finds `Aptos` and `JetBrains Mono` even if they are not installed on your system.
+L'utilisation de l'argument `--font-path` assure que Typst trouve `Aptos` et `JetBrains Mono` même si elles ne sont pas installées sur votre système.
